@@ -1,0 +1,49 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+ "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+<f:view>
+	<h:head>
+		<title>Aplicación JavaServer Faces</title>
+		
+	</h:head>
+	<h:body>
+		<h:form>
+			<h3>Por favor, introduce tu nombre y tu contraseña (número entre
+				1 y 500)</h3>
+			<table>
+				<tr>
+					<td>Nombre:</td>
+					<td><h:inputText id="nombre" value="#{login.nombre}">
+							<f:validateRegex pattern="^(([a-z]|[A-Z])+[0-9]?)$" />
+						</h:inputText></td>
+					<td><h:message for="nombre" style="color:red" /></td>
+				</tr>
+				<tr>
+					<td>Contraseña:</td>
+					<td><h:inputSecret id="pass" redisplay="true"
+							value="#{login.password}">
+							<f:validateLongRange minimum="1" maximum="500" />
+							<f:ajax execute="pass" render="mensajes" />
+						</h:inputSecret></td>
+					<td><h:message for="pass" style="color:red" /></td>
+				</tr>
+				<tr>
+					<td>Fecha (dd/MM/yyyy):</td>
+					<td><h:inputText id="data" value="#{login.fecha}">
+							<f:convertDateTime pattern="dd/MM/yyyy" />
+						</h:inputText></td>
+				</tr>
+			</table>
+			<p>
+				<h:commandButton value="Aceptar" action="#{login.comprobar}" />
+				<h:commandButton value="Pirata" immediate="true" action="error"></h:commandButton>
+			</p>
+			<h:messages style="color:blue" />
+			<h:messages id="mensajes" style="color:blue"/>
+		</h:form>
+	</h:body>
+</f:view>
+</html>
