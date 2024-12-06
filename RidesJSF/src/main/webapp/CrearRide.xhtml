@@ -1,45 +1,104 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
-      xmlns:p="http://primefaces.org/ui"
-      xmlns:f="http://xmlns.jcp.org/jsf/core">
-<h:head>
-    <title>Crear Ride</title>
-</h:head>
-<h:body>
+      xmlns:p="http://primefaces.org/ui">
+
+    <h:head>
+        <title>Crear Ride</title>
+        
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                background-color: #f4f4f4;
+                margin: 0;
+                padding: 0;
+            }
+
+            h1 {
+                text-align: center;
+                color: #333;
+            }
+
+            .container {
+                display: flex;
+                justify-content: space-between;
+                margin: 20px;
+            }
+
+            .form-group {
+                margin: 10px;
+                padding: 10px;
+                flex: 1;
+            }
+
+            .calendar-group {
+                margin: 10px;
+                padding: 10px;
+                flex: 0.8;
+            }
+
+            label {
+                display: block;
+                margin-bottom: 5px;
+                color: #555;
+            }
+
+            input, .ui-calendar {
+                width: 80%;
+                padding: 8px;
+                margin-bottom: 10px;
+                border: 1px solid #ccc;
+                border-radius: 4px;
+            }
+
+            .button-group {
+                display: flex;
+                justify-content: center;
+                margin: 20px;
+            }
+
+            .ui-button {
+                width: 150px;
+                padding: 10px;
+                background-color: #007bff;
+                color: white;
+                border: none;
+                border-radius: 4px;
+                cursor: pointer;
+                margin: 0 10px;
+            }
+
+            .ui-button:hover {
+                background-color: #0056b3;
+            }
+        </style>
+    </h:head>
+
+<body>
     <h:form>
-        <h1><h:outputText value="#{msg['CreateRideGUI.CreateRide']}" /></h1>
-
-        <!-- Campo para el origen -->
-        <p:outputLabel for="origin" value="#{msg['CreateRideGUI.LeavingFrom']}" />
-        <p:inputText id="origin" value="#{rideBean.origin}" required="true" requiredMessage="#{msg['CreateRideGUI.ErrorQuery']}" />
-
-        <!-- Campo para el destino -->
-        <p:outputLabel for="destination" value="#{msg['CreateRideGUI.GoingTo']}" />
-        <p:inputText id="destination" value="#{rideBean.destination}" required="true" requiredMessage="#{msg['CreateRideGUI.ErrorQuery']}" />
-
-        <!-- Campo para la cantidad de asientos -->
-        <p:outputLabel for="seats" value="#{msg['CreateRideGUI.NumberOfSeats']}" />
-        <p:inputText id="seats" value="#{rideBean.seats}" required="true" requiredMessage="#{msg['CreateRideGUI.ErrorNumber']}">
-            <f:validateLongRange minimum="1" />
-        </p:inputText>
-
-        <!-- Campo para el precio -->
-        <p:outputLabel for="price" value="#{msg['CreateRideGUI.Price']}" />
-        <p:inputText id="price" value="#{rideBean.price}" required="true" requiredMessage="#{msg['CreateRideGUI.ErrorNumber']}">
-            <f:validateDoubleRange minimum="0.01" />
-        </p:inputText>
-
-        <!-- Calendario para la fecha -->
-        <p:outputLabel for="date" value="#{msg['CreateRideGUI.RideDate']}" />
-        <p:calendar id="date" value="#{rideBean.rideDate}" pattern="yyyy-MM-dd" mindate="#{rideBean.today}" />
-
-        <!-- Botones de acción -->
-        <p:commandButton value="#{msg['CreateRideGUI.CreateRide']}" action="#{rideBean.createRide}" update="messages" />
-        <p:commandButton value="#{msg['Close']}" action="#{rideBean.close}" immediate="true" />
-
-        <!-- Mensajes de error -->
-        <p:messages id="messages" showDetail="true" autoUpdate="true" />
+        <h1>Crear viajes para: #{CrearRideBean.driverName}</h1>
+        <p:messages id="messages" globalOnly="true" />
+        <div class="container">
+            <div class="form-group">
+                <label for="from">Desde:</label>
+                <p:inputText id="from" value="#{CrearRideBean.from}" />
+                <label for="to">Hasta:</label>
+                <p:inputText id="to" value="#{CrearRideBean.to}" />
+                <label for="nPlaces">Número de Plazas:</label>
+                <p:inputText id="nPlaces" value="#{CrearRideBean.nPlaces}" />
+                <label for="price">Precio:</label>
+                <p:inputText id="price" value="#{CrearRideBean.price}" />
+            </div>
+            <div class="calendar-group">
+                <label for="fecha">Fecha:</label>
+                <p:calendar id="fecha" value="#{CrearRideBean.fecha}" navigator="false" pattern="dd/MM/yyyy" mode="inline" />
+            </div>
+        </div>
+        <div class="button-group">
+            <p:commandButton value="Crear Ride" action="#{CrearRideBean.createRide}" update="messages" />
+            <p:commandButton value="Volver a Login" action="#{LoginBean.logout}" />
+            <p:commandButton value="Menú" action="home.xhtml" />
+        </div>
     </h:form>
-</h:body>
+</body>
 </html>

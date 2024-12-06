@@ -6,8 +6,11 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 import javax.persistence.EntityManager;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
-
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.faces.application.FacesMessage;
+import jakarta.faces.context.FacesContext;
 import configuration.UtilDate;
 import exceptions.RideAlreadyExistException;
 import exceptions.RideMustBeLaterThanTodayException;
@@ -15,11 +18,62 @@ import modelo.JPAUtil;
 import modelo.dominio.Driver;
 import modelo.dominio.Ride;
 
+@ApplicationScoped
 public class HibernateDataAccess {
 
 	public HibernateDataAccess() {
 
 	}
+	
+	public void initializeDatabase() {
+	    EntityManager em = JPAUtil.getEntityManager();
+	    try {
+	        em.getTransaction().begin();
+
+	        // Ejemplo de creación de datos iniciales
+	        Driver driver1 = new Driver("admin@example.com", "admin", "admin1");
+	        Ride ride1 = driver1.addRide("CityA", "CityB", new Date(), 3, 15.0f);
+	        Ride ride2 = driver1.addRide("CityC", "CityD", new Date(), 5, 11.0f);
+	        
+	        Driver driver2 = new Driver("Test2@example.com","example","example1");
+	        Ride ride3 = driver2.addRide("CityE", "CityF", new Date(), 2, 12.0f);
+
+	        // Persistir datos
+	        em.persist(driver1);
+	        em.persist(driver2);
+	        em.persist(ride1);
+	        em.persist(ride2);
+	        em.persist(ride3);
+
+	        em.getTransaction().commit();
+	        System.out.println("Datos iniciales precargados en la base de datos.");
+	    } catch (Exception e) {
+	        if (em.getTransaction().isActive()) {
+	            em.getTransaction().rollback();
+	        }
+	        e.printStackTrace();
+	    } finally {
+	        em.close();
+	    }
+	}
+
+	
+	public boolean validateDriver(String email, String password) {
+        EntityManager em = JPAUtil.getEntityManager();
+        try {
+            String jpql = "SELECT COUNT(d) FROM Driver d WHERE d.email = :email AND d.password = :password";
+            Query query = em.createQuery(jpql);
+            query.setParameter("email", email);
+            query.setParameter("password", password);
+
+            Long count = (Long) query.getSingleResult();
+            return count > 0; // Devuelve true si encontró un registro.
+        } finally {
+            if (em != null) {
+                em.close();
+            }
+        }
+    }
 
 	// metodo de guardar nuevo Driver
 	public boolean addNewDriver(String correo, String name, String password) {
@@ -50,9 +104,82 @@ public class HibernateDataAccess {
 		}
 	}
 
-	// metodo de validacion de usuario
+//	public Ride createRide(String from, String to, Date date, int nPlaces, float price, String driverEmail)
+//            throws RideAlreadyExistException, RideMustBeLaterThanTodayException {
+//		EntityManager em = JPAUtil.getEntityManager();
+//        System.out.println(">> DataAccess: createRide=> from= " + from + " to= " + to + " driver=" + driverEmail + " date " + date);
+//        try {
+//            // Verificar si la fecha es válida
+//            if (new Date().compareTo(date) > 0) {
+//                throw new RideMustBeLaterThanTodayException("El viaje debe ser posterior a hoy");
+//            }
+//
+//            em.getTransaction().begin();
+//
+//            Driver driver = em.find(Driver.class, driverEmail);
+//            if (driver.doesRideExists(from, to, date)) {
+//                em.getTransaction().commit();
+//                throw new RideAlreadyExistException("Ya existe un viaje con las mismas características");
+//            }
+//
+//            Ride ride = driver.addRide(from, to, date, nPlaces, price);
+//            em.persist(driver);	
+//            em.getTransaction().commit();
+//
+//            return ride; // Retorna el viaje si fue creado exitosamente
+//        } catch (Exception e) {
+//            em.getTransaction().commit();
+//            // Si ocurre un error inesperado, lanzar una excepción genérica
+//            throw new RuntimeException("Error inesperado al crear el viaje", e);
+//        }
+//        finally {
+//        	em.close();
+//        }
+//    }
+	public Ride createRide(String from, String to, Date date, int nPlaces, float price, String driverEmail)
+	        throws RideAlreadyExistException, RideMustBeLaterThanTodayException {
+	    EntityManager em = JPAUtil.getEntityManager();
 
-	//
+	    System.out.println(">> DataAccess: createRide => from=" + from + " to=" + to + " driver=" + driverEmail + " date=" + date);
+
+	    try {
+	        // Validar la fecha ingresada
+	        if (new Date().compareTo(date) > 0) {
+	            throw new RideMustBeLaterThanTodayException("El viaje debe ser posterior a hoy");
+	        }
+
+	        em.getTransaction().begin();
+
+	        // Buscar al conductor por email
+	        Driver driver = em.find(Driver.class, driverEmail);
+	        if (driver == null) {
+	            throw new IllegalArgumentException("No se encontró un conductor con el correo proporcionado.");
+	        }
+
+	        // Verificar si el viaje ya existe
+	        if (driver.doesRideExists(from, to, date)) {
+	            em.getTransaction().rollback(); // No es necesario continuar con la transacción
+	            throw new RideAlreadyExistException("Ya existe un viaje con las mismas características.");
+	        }
+
+	        // Crear y persistir el viaje
+	        Ride ride = driver.addRide(from, to, date, nPlaces, price);
+	        em.persist(driver); // Actualizar el conductor con el nuevo viaje
+
+	        em.getTransaction().commit();
+	        return ride; // Retorna el viaje creado exitosamente
+
+	    } catch (RideAlreadyExistException | RideMustBeLaterThanTodayException e) {
+	        if (em.getTransaction().isActive()) em.getTransaction().rollback();
+	        throw e; // Lanzar excepciones específicas para que el bean las maneje
+	    } catch (Exception e) {
+	        if (em.getTransaction().isActive()) em.getTransaction().rollback();
+	        throw new RuntimeException("Error inesperado al crear el viaje", e);
+	    } finally {
+	        em.close();
+	    }
+	}
+
 
 	/**
 	 * This method returns all the cities where rides depart
@@ -83,39 +210,6 @@ public class HibernateDataAccess {
 		return arrivingCities;
 	}
 
-	public Ride createRide(String from, String to, Date date, int nPlaces, float price, String driverEmail)
-			throws RideAlreadyExistException, RideMustBeLaterThanTodayException {
-		EntityManager em = JPAUtil.getEntityManager();
-		System.out.println(">> DataAccess: createRide=> from= " + from + " to= " + to + " driver=" + driverEmail
-				+ " date " + date);
-		try {
-			if (new Date().compareTo(date) < 0) {
-				throw new RideMustBeLaterThanTodayException(
-						ResourceBundle.getBundle("Etiquetas").getString("CreateRideGUI.ErrorRideMustBeLaterThanToday"));
-			}
-			em.getTransaction().begin();
-
-			Driver driver = em.find(Driver.class, driverEmail);
-			if (driver.doesRideExists(from, to, date)) {
-				em.getTransaction().commit();
-				throw new RideAlreadyExistException(
-						ResourceBundle.getBundle("Etiquetas").getString("DataAccess.RideAlreadyExist"));
-			}
-			Ride ride = driver.addRide(from, to, date, nPlaces, price);
-			// next instruction can be obviated
-			em.persist(driver);
-			em.getTransaction().commit();
-
-			return ride;
-		} catch (NullPointerException e) {
-			// TODO Auto-generated catch block
-			em.getTransaction().commit();
-			return null;
-		} finally {
-			em.close();
-		}
-
-	}
 
 	public List<Date> getThisMonthDatesWithRides(String from, String to, Date date) {
 		System.out.println(">> DataAccess: getEventsMonth");
@@ -158,5 +252,15 @@ public class HibernateDataAccess {
 			em.getTransaction().rollback();
 			return null;
 		}
+	}
+	public String getDriverNameByEmail(String email) {
+	    EntityManager em = JPAUtil.getEntityManager();
+	    try {
+	        TypedQuery<String> query = em.createQuery("SELECT d.name FROM Driver d WHERE d.email = :email", String.class);
+	        query.setParameter("email", email);
+	        return query.getSingleResult();
+	    } finally {
+	        em.close();
+	    }
 	}
 }

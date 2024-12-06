@@ -4,46 +4,97 @@
 	xmlns:h="http://xmlns.jcp.org/jsf/html"
 	xmlns:f="http://xmlns.jcp.org/jsf/core"
 	xmlns:p="http://primefaces.org/ui">
-<f:view>
-	<h:head>
-		<title>Aplicación JavaServer Faces</title>
-		
-	</h:head>
-	<h:body>
+<head>
+<title>Inicio de Sesión</title>
+<style>
+body {
+	font-family: Arial, sans-serif;
+	background-color: #f2f2f2;
+	display: flex;
+	justify-content: center; /* Center horizontally */
+	align-items: center; /* Center vertically */
+	height: 100vh;
+	margin: 0; /* Remove default body margins */
+}
+
+.login-container {
+	background-color: #ffffff;
+	border-radius: 10px;
+	box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+	padding: 20px;
+	width: 300px;
+	display: flex; /* Align children */
+	flex-direction: column; /* Stack elements vertically */
+	align-items: center; /* Center items horizontally */
+}
+
+.login-container h2 {
+	margin-bottom: 20px;
+	text-align: center; /* Center text */
+	width: 100%; /* Ensure full width for consistency */
+}
+
+.login-container h4 {
+	margin: 5px 0;
+	text-align: left; /* Align labels to the left */
+	width: 100%;
+}
+
+.login-container input[type="text"], .login-container input[type="password"]
+	{
+	width: 100%; /* Full width within the container */
+	padding: 10px;
+	margin: 10px 0;
+	border: 1px solid #ccc;
+	border-radius: 5px;
+	box-sizing: border-box; /* Ensure padding does not overflow */
+}
+
+.login-container input[type="submit"], .login-container h\:commandButton
+	{
+	background-color: #4CAF50;
+	color: white;
+	border: none;
+	padding: 10px 20px;
+	border-radius: 5px;
+	cursor: pointer;
+	width: 100%; /* Button spans full container width */
+}
+
+.login-container input[type="submit"]:hover, .login-container h\:commandButton:hover
+	{
+	background-color: #45a049;
+}
+
+.login-container a {
+	display: block;
+	margin-top: 20px;
+	color: #007bff;
+	text-decoration: none;
+	text-align: center;
+	width: 100%; /* Full width for proper alignment */
+}
+
+.login-container a:hover {
+	text-decoration: underline;
+}
+</style>
+</head>
+<body>
+	<div class="login-container">
+		<h2>Inicio de Sesión</h2>
 		<h:form>
-			<h3>Por favor, introduce tu nombre y tu contraseña (número entre
-				1 y 500)</h3>
-			<table>
-				<tr>
-					<td>Nombre:</td>
-					<td><h:inputText id="nombre" value="#{login.nombre}">
-							<f:validateRegex pattern="^(([a-z]|[A-Z])+[0-9]?)$" />
-						</h:inputText></td>
-					<td><h:message for="nombre" style="color:red" /></td>
-				</tr>
-				<tr>
-					<td>Contraseña:</td>
-					<td><h:inputSecret id="pass" redisplay="true"
-							value="#{login.password}">
-							<f:validateLongRange minimum="1" maximum="500" />
-							<f:ajax execute="pass" render="mensajes" />
-						</h:inputSecret></td>
-					<td><h:message for="pass" style="color:red" /></td>
-				</tr>
-				<tr>
-					<td>Fecha (dd/MM/yyyy):</td>
-					<td><h:inputText id="data" value="#{login.fecha}">
-							<f:convertDateTime pattern="dd/MM/yyyy" />
-						</h:inputText></td>
-				</tr>
-			</table>
-			<p>
-				<h:commandButton value="Aceptar" action="#{login.comprobar}" />
-				<h:commandButton value="Pirata" immediate="true" action="error"></h:commandButton>
-			</p>
-			<h:messages style="color:blue" />
-			<h:messages id="mensajes" style="color:blue"/>
+			<h4>Email</h4>
+			<h:inputText id="email" value="#{LoginBean.email}" required="true"
+				placeholder="Correo" />
+			<h4>Contraseña</h4>
+			<h:inputSecret id="password" value="#{LoginBean.password}"
+				required="true" placeholder="Contraseña" />
+			<h:commandButton value="Iniciar Sesión" action="#{LoginBean.login}"
+				styleClass="form-button" />
+			<h:messages globalOnly="true" style="color: red;" />
 		</h:form>
-	</h:body>
-</f:view>
+		<a href="register.xhtml">Registrarse</a>
+	</div>
+</body>
 </html>

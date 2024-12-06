@@ -1,0 +1,83 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+ "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core">
+<head>
+<title>Página de Viajes</title>
+<style>
+body {
+	font-family: Arial, sans-serif;
+	background-color: #f4f4f9;
+	margin: 0;
+	padding: 0;
+}
+
+.container {
+	max-width: 800px;
+	margin: 50px auto;
+	padding: 20px;
+	background-color: #fff;
+	box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+	border-radius: 8px;
+	text-align: center;
+}
+
+.container {
+	background-color: #ffffff;
+	border-radius: 10px;
+	box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+	padding: 20px;
+	width: 300px;
+	display: flex; /* Align children */
+	flex-direction: column; /* Stack elements vertically */
+	align-items: center; /* Center items horizontally */
+}
+
+.button {
+	display: inline-block;
+	margin: 10px;
+	padding: 10px 20px;
+	font-size: 16px;
+	color: #fff;
+	background-color: #007bff;
+	border: none;
+	border-radius: 5px;
+	cursor: pointer;
+	text-decoration: none;
+}
+
+.button:hover {
+	background-color: #0056b3;
+}
+
+.logout {
+	position: absolute;
+	top: 10px;
+	right: 10px;
+	font-size: 14px;
+	color: #007bff;
+	text-decoration: none;
+}
+
+.logout:hover {
+	text-decoration: underline;
+}
+</style>
+</head>
+<body>
+	
+	<div class="container">
+	<h1>Bienvenido, #{homeBean.driverName}</h1>
+		<h:form>
+			<h:commandButton value="Crear un Viaje" action="#{homeBean.createRide}"
+				styleClass="button" />
+			<h:commandButton value="Ver Viajes" action="#{homeBean.queryRides}"
+				styleClass="button" />
+				<h:commandButton value="Cerrar Sesión" action="#{LoginBean.logout}"
+		styleClass="logout" />
+		</h:form>
+	</div>
+	
+</body>
+</html>

@@ -15,6 +15,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 @XmlAccessorType(XmlAccessType.FIELD)
 @Entity
 public class Ride implements Serializable {
+	
 	@XmlID
 	@XmlJavaTypeAdapter(IntegerAdapter.class)
 	@Id 
@@ -27,7 +28,8 @@ public class Ride implements Serializable {
 	private int nPlaces;
 	private Date date;
 	private float price;
-	@ManyToOne(targetEntity=Driver.class, cascade=CascadeType.PERSIST,fetch=FetchType.EAGER)
+	@ManyToOne(fetch = FetchType.EAGER, optional = false, cascade = CascadeType.ALL)
+    @JoinColumn(name = "driver_email", nullable = false)
 	private Driver driver;  
 	
 	public Ride(){

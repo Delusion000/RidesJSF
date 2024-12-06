@@ -21,19 +21,19 @@ public class Driver implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+	
 	@XmlID
 	@Id 
 	private String email;
 	private String name; 
 	private String password;
 	
-    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    private Login  login;
+    //@OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    //private Login  login;
 
 	@XmlIDREF
-	@OneToMany(targetEntity=Ride.class,fetch=FetchType.EAGER, cascade=CascadeType.PERSIST)
-	private List<Ride> rides=new Vector<Ride>();
-	@OneToMany(targetEntity=Ride.class,fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+	
+	@OneToMany(mappedBy = "driver", targetEntity = Ride.class, fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	private List<Ride> createdRides = new ArrayList<Ride>();
 
 	public Driver() {
@@ -73,7 +73,7 @@ public class Driver implements Serializable {
 	
 	
 	public String toString(){
-		return email+";"+name+rides;
+		return email+";"+name+ createdRides;
 	}
 	
 	public List<Ride> getCreatedRides() {
@@ -93,7 +93,7 @@ public class Driver implements Serializable {
 	 */
 	public Ride addRide(String from, String to, Date date, int nPlaces, float price)  {
         Ride ride=new Ride(from,to,date,nPlaces,price, this);
-        rides.add(ride);
+        createdRides.add(ride);
         return ride;
 	}
 
@@ -106,7 +106,7 @@ public class Driver implements Serializable {
 	 * @return true if the ride exists and false in other case
 	 */
 	public boolean doesRideExists(String from, String to, Date date)  {	
-		for (Ride r:rides)
+		for (Ride r:createdRides)
 			if ( (java.util.Objects.equals(r.getFrom(),from)) && (java.util.Objects.equals(r.getTo(),to)) && (java.util.Objects.equals(r.getDate(),date)) )
 			 return true;
 		
@@ -131,14 +131,14 @@ public class Driver implements Serializable {
 		boolean found=false;
 		int index=0;
 		Ride r=null;
-		while (!found && index<=rides.size()) {
-			r=rides.get(++index);
+		while (!found && index<=createdRides.size()) {
+			r=createdRides.get(++index);
 			if ( (java.util.Objects.equals(r.getFrom(),from)) && (java.util.Objects.equals(r.getTo(),to)) && (java.util.Objects.equals(r.getDate(),date)) )
 			found=true;
 		}
 			
 		if (found) {
-			rides.remove(index);
+			createdRides.remove(index);
 			return r;
 		} else return null;
 	}

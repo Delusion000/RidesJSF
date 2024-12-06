@@ -1,0 +1,103 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+ "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html" 
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+<head>
+    <title>Registro</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        
+        .register-container {
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            width: 300px;
+            display: flex;
+            flex-direction: column;
+            align-items: center; /* Center items horizontally */
+        }
+        
+        .register-container h2 {
+            margin-bottom: 20px;
+            text-align: center; /* Center text */
+            width: 100%;
+        }
+        
+        .register-container h4 {
+            margin: 5px 0;
+            text-align: left; /* Align labels to the left */
+            width: 100%;
+        }
+        
+        .register-container input[type="text"],
+        .register-container input[type="email"],
+        .register-container input[type="password"] {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box; /* Ensure padding does not overflow */
+        }
+        
+        .register-container input[type="submit"],
+        .register-container h\:commandButton {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 10px;
+        }
+        
+        .register-container input[type="submit"]:hover,
+        .register-container h\:commandButton:hover {
+            background-color: #45a049;
+        }
+        
+        .register-container a {
+            text-decoration: none;
+            margin-top: 10px;
+            display: block;
+            color: #007bff;
+            text-align: center;
+        }
+        
+        .register-container a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="register-wrapper">
+        <div class="register-container">
+            <h2>Registro</h2>
+            <h:form>
+                <h4>Nombre</h4>
+                <h:inputText id="name" value="#{LoginBean.name}" required="true" placeholder="Nombre" />
+                <h4>Correo</h4>
+                <h:inputText id="email" value="#{LoginBean.email}" required="true" placeholder="Correo" />
+                <h4>Contraseña</h4>
+                <h:inputSecret id="password" value="#{LoginBean.password}" required="true" placeholder="Contraseña" />
+                <h:commandButton value="Registrar" action="#{LoginBean.register}" styleClass="form-button" />
+                <h:messages globalOnly="true" style="color: red;" />
+            </h:form>
+            <a href="Login.xhtml">Regresar a Login</a>
+        </div>
+    </div>
+</body>
+</html>
