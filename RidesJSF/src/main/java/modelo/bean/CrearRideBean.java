@@ -16,6 +16,10 @@ import java.util.Date;
 @Named("CrearRideBean")
 @SessionScoped
 public class CrearRideBean implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private String from;
 	private String to;
 	private Date fecha;
@@ -95,46 +99,46 @@ public class CrearRideBean implements Serializable {
 		this.driverName = driverName;
 	}
 
-	// Method to create the ride
-//	public String createRide() {
-//	    try {
-//	        // Llamar al método de HibernateDataAccess para crear el viaje
-//	        Ride ride = dataAccess.createRide(from, to, fecha, nPlaces, price, driverEmail);
-//	        
-//	        // Si el viaje se crea correctamente, no redirigir, solo quedarse en la misma página
-//	        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Viaje creado exitosamente", null));
-//	        
-//	    } catch (RideMustBeLaterThanTodayException e) {
-//	        // Si ocurre una excepción relacionada con la fecha
-//	        FacesContext.getCurrentInstance().addMessage(null, 
-//	                new FacesMessage(FacesMessage.SEVERITY_ERROR, e.getMessage(), null));
-//	    } catch (RideAlreadyExistException e) {
-//	        // Si ya existe un viaje con las mismas características
-//	        FacesContext.getCurrentInstance().addMessage(null, 
-//	                new FacesMessage(FacesMessage.SEVERITY_ERROR, e.getMessage(), null));
-//	    } catch (Exception e) {
-//	        // En caso de excepción inesperada
-//	        FacesContext.getCurrentInstance().addMessage(null, 
-//	                new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error inesperado al crear el viaje", null));
-//	    }
-//	    
-//	    // Si ocurre un error o la operación es exitosa, mantener al usuario en la misma página
-//	    return null;
-//	}
 	public void createRide() {
-		try {
-			Ride ride = dataAccess.createRide(from, to, fecha, nPlaces, price, driverEmail);
-			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,
-					"Viaje creado con éxito, numero de viaje: " + ride.getRideNumber(), null));
-		} catch (RideAlreadyExistException e) {
-			FacesContext.getCurrentInstance().addMessage(null,
-					new FacesMessage(FacesMessage.SEVERITY_ERROR, e.getMessage(), null));
-		} catch (RideMustBeLaterThanTodayException e) {
-			FacesContext.getCurrentInstance().addMessage(null,
-					new FacesMessage(FacesMessage.SEVERITY_ERROR, e.getMessage(), null));
-		} catch (Exception e) {
-			FacesContext.getCurrentInstance().addMessage(null,
-					new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error inesperado: " + e.getMessage(), null));
-		}
-	}
+        try {
+            if (from == null || from.isEmpty() || to == null || to.isEmpty()) {
+                FacesContext.getCurrentInstance().addMessage(null, 
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Los campos 'Desde' y 'Hasta' son obligatorios.", null));
+                return;
+            }
+
+            if (fecha == null) {
+                FacesContext.getCurrentInstance().addMessage(null, 
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "La fecha es obligatoria.", null));
+                return;
+            }
+
+            if (nPlaces <= 0) {
+                FacesContext.getCurrentInstance().addMessage(null, 
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "El número de plazas debe ser mayor que 0.", null));
+                return;
+            }
+
+            if (price <= 0) {
+                FacesContext.getCurrentInstance().addMessage(null, 
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "El precio debe ser mayor que 0.", null));
+                return;
+            }
+
+            Ride ride = dataAccess.createRide(from, to, fecha, nPlaces, price, driverEmail);
+            FacesContext.getCurrentInstance().addMessage(null, 
+                new FacesMessage(FacesMessage.SEVERITY_INFO, "Viaje creado con éxito, número de viaje: " + ride.getRideNumber(), null));
+        } catch (RideAlreadyExistException e) {
+            FacesContext.getCurrentInstance().addMessage(null, 
+                new FacesMessage(FacesMessage.SEVERITY_ERROR, e.getMessage(), null));
+        } catch (RideMustBeLaterThanTodayException e) {
+            FacesContext.getCurrentInstance().addMessage(null, 
+                new FacesMessage(FacesMessage.SEVERITY_ERROR, e.getMessage(), null));
+        } catch (Exception e) {
+            FacesContext.getCurrentInstance().addMessage(null, 
+                new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error inesperado: " + e.getMessage(), null));
+        }
+    }
 }
+
+

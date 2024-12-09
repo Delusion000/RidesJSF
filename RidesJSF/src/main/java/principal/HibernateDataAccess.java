@@ -104,38 +104,6 @@ public class HibernateDataAccess {
 		}
 	}
 
-//	public Ride createRide(String from, String to, Date date, int nPlaces, float price, String driverEmail)
-//            throws RideAlreadyExistException, RideMustBeLaterThanTodayException {
-//		EntityManager em = JPAUtil.getEntityManager();
-//        System.out.println(">> DataAccess: createRide=> from= " + from + " to= " + to + " driver=" + driverEmail + " date " + date);
-//        try {
-//            // Verificar si la fecha es válida
-//            if (new Date().compareTo(date) > 0) {
-//                throw new RideMustBeLaterThanTodayException("El viaje debe ser posterior a hoy");
-//            }
-//
-//            em.getTransaction().begin();
-//
-//            Driver driver = em.find(Driver.class, driverEmail);
-//            if (driver.doesRideExists(from, to, date)) {
-//                em.getTransaction().commit();
-//                throw new RideAlreadyExistException("Ya existe un viaje con las mismas características");
-//            }
-//
-//            Ride ride = driver.addRide(from, to, date, nPlaces, price);
-//            em.persist(driver);	
-//            em.getTransaction().commit();
-//
-//            return ride; // Retorna el viaje si fue creado exitosamente
-//        } catch (Exception e) {
-//            em.getTransaction().commit();
-//            // Si ocurre un error inesperado, lanzar una excepción genérica
-//            throw new RuntimeException("Error inesperado al crear el viaje", e);
-//        }
-//        finally {
-//        	em.close();
-//        }
-//    }
 	public Ride createRide(String from, String to, Date date, int nPlaces, float price, String driverEmail)
 	        throws RideAlreadyExistException, RideMustBeLaterThanTodayException {
 	    EntityManager em = JPAUtil.getEntityManager();
@@ -157,14 +125,14 @@ public class HibernateDataAccess {
 	        }
 
 	        // Verificar si el viaje ya existe
-	        if (driver.doesRideExists(from, to, date)) {
+	        if (driver.doesRideExist(em, driverEmail, from, to, date)) {
 	            em.getTransaction().rollback(); // No es necesario continuar con la transacción
 	            throw new RideAlreadyExistException("Ya existe un viaje con las mismas características.");
 	        }
 
 	        // Crear y persistir el viaje
 	        Ride ride = driver.addRide(from, to, date, nPlaces, price);
-	        em.persist(driver); // Actualizar el conductor con el nuevo viaje
+	        em.persist(ride); // Actualizar el conductor con el nuevo viaje
 
 	        em.getTransaction().commit();
 	        return ride; // Retorna el viaje creado exitosamente
@@ -186,10 +154,11 @@ public class HibernateDataAccess {
 	 * 
 	 * @return collection of cities
 	 */
-	public List<String> getDepartCities() {
+	public List<Ride> getDepartCities() {
 		EntityManager em = JPAUtil.getEntityManager();
-		TypedQuery<String> query = em.createQuery("SELECT DISTINCT r.from FROM Ride r ORDER BY r.from", String.class);
-		List<String> cities = query.getResultList();
+		TypedQuery<Ride> query = em.createQuery("SELECT DISTINCT r.from FROM Ride r ORDER BY r.from", Ride.class);
+		List<Ride> cities = query.getResultList();
+		System.out.println("Ciudades de partida obtenidas: " + cities);
 		return cities;
 
 	}
@@ -211,28 +180,47 @@ public class HibernateDataAccess {
 	}
 
 
-	public List<Date> getThisMonthDatesWithRides(String from, String to, Date date) {
-		System.out.println(">> DataAccess: getEventsMonth");
-		EntityManager em = JPAUtil.getEntityManager();
-		List<Date> res = new ArrayList<>();
+	
+//	public List<Date> getThisMonthDatesWithRides(String from, String to, Date date) {
+//		System.out.println(">> DataAccess: getEventsMonth");
+//		EntityManager em = JPAUtil.getEntityManager();
+//		List<Date> res = new ArrayList<>();
+//
+//		Date firstDayMonthDate = UtilDate.firstDayMonth(date);
+//		Date lastDayMonthDate = UtilDate.lastDayMonth(date);
+//
+//		TypedQuery<Date> query = em.createQuery(
+//				"SELECT DISTINCT r.date FROM Ride r WHERE r.from=?1 AND r.to=?2 AND r.date BETWEEN ?3 and ?4",
+//				Date.class);
+//
+//		query.setParameter(1, from);
+//		query.setParameter(2, to);
+//		query.setParameter(3, firstDayMonthDate);
+//		query.setParameter(4, lastDayMonthDate);
+//		List<Date> dates = query.getResultList();
+//		for (Date d : dates) {
+//			res.add(d);
+//		}
+//		return res;
+//	}
+	public List<Ride> getThisMonthDatesWithRides(String from, String to, Date date) {
+	    EntityManager em = JPAUtil.getEntityManager();
 
-		Date firstDayMonthDate = UtilDate.firstDayMonth(date);
-		Date lastDayMonthDate = UtilDate.lastDayMonth(date);
+	    Date firstDayMonthDate = UtilDate.firstDayMonth(date);
+	    Date lastDayMonthDate = UtilDate.lastDayMonth(date);
 
-		TypedQuery<Date> query = em.createQuery(
-				"SELECT DISTINCT r.date FROM Ride r WHERE r.from=?1 AND r.to=?2 AND r.date BETWEEN ?3 and ?4",
-				Date.class);
+	    TypedQuery<Ride> query = em.createQuery(
+	        "SELECT r FROM Ride r WHERE r.from = :from AND r.to = :to AND r.date BETWEEN :startDate AND :endDate",
+	        Ride.class
+	    );
+	    query.setParameter("from", from);
+	    query.setParameter("to", to);
+	    query.setParameter("startDate", firstDayMonthDate);
+	    query.setParameter("endDate", lastDayMonthDate);
 
-		query.setParameter(1, from);
-		query.setParameter(2, to);
-		query.setParameter(3, firstDayMonthDate);
-		query.setParameter(4, lastDayMonthDate);
-		List<Date> dates = query.getResultList();
-		for (Date d : dates) {
-			res.add(d);
-		}
-		return res;
+	    return query.getResultList();
 	}
+
 
 	public List<Ride> getRidesByDriver(String username) {
 		EntityManager em = JPAUtil.getEntityManager();

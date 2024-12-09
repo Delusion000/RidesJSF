@@ -4,9 +4,10 @@
 	xmlns:h="http://xmlns.jcp.org/jsf/html"
 	xmlns:f="http://xmlns.jcp.org/jsf/core"
 	xmlns:p="http://primefaces.org/ui">
-<head>
-<title>Inicio de Sesión</title>
-<style>
+
+<h:head>
+	<title>Inicio de Sesión</title>
+	<style>
 body {
 	font-family: Arial, sans-serif;
 	background-color: #f2f2f2;
@@ -79,22 +80,24 @@ body {
 	text-decoration: underline;
 }
 </style>
-</head>
+</h:head>
+
 <body>
 	<div class="login-container">
 		<h2>Inicio de Sesión</h2>
 		<h:form>
 			<h4>Email</h4>
-			<h:inputText id="email" value="#{LoginBean.email}" required="true"
+			<h:inputText id="email" value="#{LoginBean.email}"
 				placeholder="Correo" />
 			<h4>Contraseña</h4>
 			<h:inputSecret id="password" value="#{LoginBean.password}"
-				required="true" placeholder="Contraseña" />
+				placeholder="Contraseña" />
 			<h:commandButton value="Iniciar Sesión" action="#{LoginBean.login}"
 				styleClass="form-button" />
 			<h:messages globalOnly="true" style="color: red;" />
+			<a href="register.xhtml">Registrarse</a>
 		</h:form>
-		<a href="register.xhtml">Registrarse</a>
+		
 	</div>
 </body>
 </html>

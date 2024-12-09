@@ -105,14 +105,25 @@ public class Driver implements Serializable {
 	 * @param date the date of the ride 
 	 * @return true if the ride exists and false in other case
 	 */
-	public boolean doesRideExists(String from, String to, Date date)  {	
-		for (Ride r:createdRides)
-			if ( (java.util.Objects.equals(r.getFrom(),from)) && (java.util.Objects.equals(r.getTo(),to)) && (java.util.Objects.equals(r.getDate(),date)) )
-			 return true;
-		
-		return false;
+//	public boolean doesRideExists(String from, String to, Date date)  {	
+//		for (Ride r:createdRides)
+//			if ( (java.util.Objects.equals(r.getFrom(),from)) && (java.util.Objects.equals(r.getTo(),to)) && (java.util.Objects.equals(r.getDate(),date)) )
+//			 return true;
+//		
+//		return false;
+//	}
+	public boolean doesRideExist(EntityManager em, String driverEmail, String from, String to, Date date) {
+	    TypedQuery<Long> query = em.createQuery(
+	        "SELECT COUNT(r) FROM Ride r WHERE r.driver.email = :driverEmail AND r.from = :from AND r.to = :to AND r.date = :date", 
+	        Long.class
+	    );
+	    query.setParameter("driverEmail", driverEmail);
+	    query.setParameter("from", from);
+	    query.setParameter("to", to);
+	    query.setParameter("date", date);
+
+	    return query.getSingleResult() > 0;
 	}
-		
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)

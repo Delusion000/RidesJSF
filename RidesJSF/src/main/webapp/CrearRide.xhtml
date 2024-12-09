@@ -77,7 +77,7 @@
 <body>
     <h:form>
         <h1>Crear viajes para: #{CrearRideBean.driverName}</h1>
-        <p:messages id="messages" globalOnly="true" />
+        
         <div class="container">
             <div class="form-group">
                 <label for="from">Desde:</label>
@@ -88,17 +88,19 @@
                 <p:inputText id="nPlaces" value="#{CrearRideBean.nPlaces}" />
                 <label for="price">Precio:</label>
                 <p:inputText id="price" value="#{CrearRideBean.price}" />
+                <p:messages id="messages" globalOnly="true" />
+                 <div class="button-group">
+            <p:commandButton value="Crear Ride" action="#{CrearRideBean.createRide}" update="messages" />
+            <p:commandButton value="Volver a Login" action="#{LoginBean.logout}" />
+            <p:commandButton value="Menú" action="home.xhtml" />
+        </div>
             </div>
             <div class="calendar-group">
                 <label for="fecha">Fecha:</label>
                 <p:calendar id="fecha" value="#{CrearRideBean.fecha}" navigator="false" pattern="dd/MM/yyyy" mode="inline" />
             </div>
         </div>
-        <div class="button-group">
-            <p:commandButton value="Crear Ride" action="#{CrearRideBean.createRide}" update="messages" />
-            <p:commandButton value="Volver a Login" action="#{LoginBean.logout}" />
-            <p:commandButton value="Menú" action="home.xhtml" />
-        </div>
+       
     </h:form>
 </body>
 </html>

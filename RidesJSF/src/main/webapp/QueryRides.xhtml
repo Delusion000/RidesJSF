@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+      
+<h:head>
+    <title>Query Rides</title>
+</h:head>
+<h:body>
+    <h:form>
+        <h1>Search for Rides</h1>
+
+        <!-- Dropdown for Departure Cities -->
+        <p:panel header="Select Departure City">
+            <p:selectOneMenu value="#{queryRidesBean.selectedDepartCity}" 
+                             style="width: 200px" 
+                             required="true">
+                <f:selectItem itemLabel="Select a city" itemValue="" />
+                <f:selectItems value="#{queryRidesBean.departCities}" />
+                <p:ajax event="change" listener="#{queryRidesBean.loadArrivalCities}" update="arrivalCity" />
+            </p:selectOneMenu>
+        </p:panel>
+
+        <!-- Dropdown for Arrival Cities -->
+        <p:panel header="Select Arrival City">
+            <p:selectOneMenu id="arrivalCity" value="#{queryRidesBean.selectedArrivalCity}" 
+                             style="width: 200px" 
+                             required="true">
+                <f:selectItem itemLabel="Select a city" itemValue="" />
+                <f:selectItems value="#{queryRidesBean.arrivalCities}" />
+            </p:selectOneMenu>
+        </p:panel>
+
+        <!-- Calendar for Date Selection -->
+        <p:panel header="Select Date">
+            <p:calendar value="#{queryRidesBean.selectedDate}" pattern="dd/MM/yyyy" />
+        </p:panel>
+
+        <!-- Search Button -->
+        <p:commandButton value="Search" action="#{queryRidesBean.searchRides}" update="results" />
+
+        <!-- Results Table -->
+        <p:dataTable id="results" value="#{queryRidesBean.matchingRides}" var="ride" 
+                     rendered="#{not empty queryRidesBean.matchingRides}">
+            <p:column headerText="From">
+                <h:outputText value="#{ride.from}" />
+            </p:column>
+            <p:column headerText="To">
+                <h:outputText value="#{ride.to}" />
+            </p:column>
+            <p:column headerText="Date">
+                <h:outputText value="#{ride.date}" />
+            </p:column>
+            <p:column headerText="Driver">
+                <h:outputText value="#{ride.driver.name}" />
+            </p:column>
+            <p:column headerText="Price">
+                <h:outputText value="#{ride.price}" />
+            </p:column>
+            <p:column headerText="Available Places">
+                <h:outputText value="#{ride.nPlaces}" />
+            </p:column>
+        </p:dataTable>
+
+    </h:form>
+</h:body>
+</html>

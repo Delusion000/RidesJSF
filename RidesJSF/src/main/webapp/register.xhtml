@@ -89,14 +89,15 @@
             <h:form>
                 <h4>Nombre</h4>
                 <h:inputText id="name" value="#{LoginBean.name}" required="true" placeholder="Nombre" />
-                <h4>Correo</h4>
+                <h4>Email</h4>
                 <h:inputText id="email" value="#{LoginBean.email}" required="true" placeholder="Correo" />
                 <h4>Contraseña</h4>
                 <h:inputSecret id="password" value="#{LoginBean.password}" required="true" placeholder="Contraseña" />
                 <h:commandButton value="Registrar" action="#{LoginBean.register}" styleClass="form-button" />
                 <h:messages globalOnly="true" style="color: red;" />
+                <a href="Login.xhtml">Regresar a Login</a>
             </h:form>
-            <a href="Login.xhtml">Regresar a Login</a>
+            
         </div>
     </div>
 </body>
