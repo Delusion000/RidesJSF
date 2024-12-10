@@ -15,10 +15,10 @@
         <p:panel header="Select Departure City">
             <p:selectOneMenu value="#{queryRidesBean.selectedDepartCity}" 
                              style="width: 200px" 
-                             required="true">
+                             >
                 <f:selectItem itemLabel="Select a city" itemValue="" />
-                <f:selectItems value="#{queryRidesBean.departCities}" />
-                <p:ajax event="change" listener="#{queryRidesBean.loadArrivalCities}" update="arrivalCity" />
+                <f:selectItems value="#{queryRidesBean.getDepartCities()}" />
+                <p:ajax event="change" listener="#{queryRidesBean.loadArrivalCities()}" update="arrivalCity" />
             </p:selectOneMenu>
         </p:panel>
 
@@ -26,7 +26,7 @@
         <p:panel header="Select Arrival City">
             <p:selectOneMenu id="arrivalCity" value="#{queryRidesBean.selectedArrivalCity}" 
                              style="width: 200px" 
-                             required="true">
+                             >
                 <f:selectItem itemLabel="Select a city" itemValue="" />
                 <f:selectItems value="#{queryRidesBean.arrivalCities}" />
             </p:selectOneMenu>
@@ -36,33 +36,24 @@
         <p:panel header="Select Date">
             <p:calendar value="#{queryRidesBean.selectedDate}" pattern="dd/MM/yyyy" />
         </p:panel>
-
+        
+		<p:messages globalOnly="true" style="color: red;" />
         <!-- Search Button -->
-        <p:commandButton value="Search" action="#{queryRidesBean.searchRides}" update="results" />
+        <h:commandButton value="Search" action="#{queryRidesBean.searchRides}" update="results" />
 
         <!-- Results Table -->
-        <p:dataTable id="results" value="#{queryRidesBean.matchingRides}" var="ride" 
-                     rendered="#{not empty queryRidesBean.matchingRides}">
-            <p:column headerText="From">
-                <h:outputText value="#{ride.from}" />
-            </p:column>
-            <p:column headerText="To">
-                <h:outputText value="#{ride.to}" />
-            </p:column>
-            <p:column headerText="Date">
-                <h:outputText value="#{ride.date}" />
-            </p:column>
+        <p:dataTable id="results" value="#{queryRidesBean.matchingRides}" var="ride">
             <p:column headerText="Driver">
                 <h:outputText value="#{ride.driver.name}" />
             </p:column>
             <p:column headerText="Price">
                 <h:outputText value="#{ride.price}" />
             </p:column>
-            <p:column headerText="Available Places">
+            <p:column headerText="N° Places">
                 <h:outputText value="#{ride.nPlaces}" />
             </p:column>
         </p:dataTable>
-
+			
     </h:form>
 </h:body>
 </html>
