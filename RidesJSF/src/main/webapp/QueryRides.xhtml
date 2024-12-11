@@ -6,43 +6,114 @@
       
 <h:head>
     <title>Query Rides</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        .form-container {
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .panel-header {
+            font-size: 1.2em;
+            margin-bottom: 10px;
+            color: #555;
+        }
+        .search-label {
+            display: block;
+            margin-bottom: 5px;
+            color: #333;
+        }
+        .search-button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        .search-button:hover {
+            background-color: #0056b3;
+        }
+        .results-table {
+            width: 100%;
+            margin-top: 20px;
+            border-collapse: collapse;
+        }
+        .results-table th, .results-table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        .results-table th {
+            background-color: #f2f2f2;
+        }
+        .top-right-links {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+        }
+        .top-right-links a {
+            margin-left: 10px;
+            color: #007bff;
+            text-decoration: none;
+        }
+        .top-right-links a:hover {
+            text-decoration: underline;
+        }
+    </style>
 </h:head>
 <h:body>
-    <h:form>
-        <h1>Search for Rides</h1>
+    <div class="top-right-links">
+        <p:commandButton value="Cerrar Sesión" action="#{LoginBean.logout}" />
+        <p:commandButton value="Menú" action="home.xhtml" />
+    </div>
+    <h:form class="form-container">
+        <h1>Buscar Viajes</h1>
 
         <!-- Dropdown for Departure Cities -->
-        <p:panel header="Select Departure City">
-            <p:selectOneMenu value="#{queryRidesBean.selectedDepartCity}" 
-                             style="width: 200px" 
-                             >
-                <f:selectItem itemLabel="Select a city" itemValue="" />
-                <f:selectItems value="#{queryRidesBean.getDepartCities()}" />
-                <p:ajax event="change" listener="#{queryRidesBean.loadArrivalCities()}" update="arrivalCity" />
-            </p:selectOneMenu>
-        </p:panel>
+        <div class="panel-header">Selecciona ciudad de salida</div>
+        <p:selectOneMenu value="#{queryRidesBean.selectedDepartCity}" style="width: 100%;">
+            <f:selectItem itemLabel="Selecciona una ciudad" itemValue="" />
+            <f:selectItems value="#{queryRidesBean.getDepartCities()}" />
+            <p:ajax event="change" listener="#{queryRidesBean.loadArrivalCities()}" update="arrivalCity" />
+        </p:selectOneMenu>
 
         <!-- Dropdown for Arrival Cities -->
-        <p:panel header="Select Arrival City">
-            <p:selectOneMenu id="arrivalCity" value="#{queryRidesBean.selectedArrivalCity}" 
-                             style="width: 200px" 
-                             >
-                <f:selectItem itemLabel="Select a city" itemValue="" />
-                <f:selectItems value="#{queryRidesBean.arrivalCities}" />
-            </p:selectOneMenu>
-        </p:panel>
+        <div class="panel-header">Selecciona ciudad de llegada</div>
+        <p:selectOneMenu id="arrivalCity" value="#{queryRidesBean.selectedArrivalCity}" style="width: 100%;">
+            <f:selectItem itemLabel="Selecciona una ciudad" itemValue="" />
+            <f:selectItems value="#{queryRidesBean.arrivalCities}" />
+        </p:selectOneMenu>
 
         <!-- Calendar for Date Selection -->
-        <p:panel header="Select Date">
-            <p:calendar value="#{queryRidesBean.selectedDate}" pattern="dd/MM/yyyy" />
-        </p:panel>
-        
-		<p:messages globalOnly="true" style="color: red;" />
+        <div class="panel-header">Selecciona fecha</div>
+        <p:calendar value="#{queryRidesBean.selectedDate}" pattern="dd/MM/yyyy" style="width: 100%;" />
+
         <!-- Search Button -->
-        <h:commandButton value="Search" action="#{queryRidesBean.searchRides}" update="results" />
+        <h:commandButton value="Search" action="#{queryRidesBean.searchRides}" update="results" class="search-button" />
+        <p:messages globalOnly="true" style="color: red;" />
+
+        <!-- Search by Username -->
+        <div class="panel-header">Viajes por Conductor</div>
+        <label for="username" class="search-label">Nombre de conductor</label>
+        <p:inputText id="username" value="#{queryRidesBean.username}" style="width: 100%;" />
+        <h:commandButton value="Search by Username" action="#{queryRidesBean.searchRidesWithUser}" update="results2" class="search-button" />
 
         <!-- Results Table -->
-        <p:dataTable id="results" value="#{queryRidesBean.matchingRides}" var="ride">
+        <p:dataTable id="results" value="#{queryRidesBean.matchingRides}" var="ride" rendered="#{not empty queryRidesBean.matchingRides}" class="results-table">
             <p:column headerText="Driver">
                 <h:outputText value="#{ride.driver.name}" />
             </p:column>
@@ -53,7 +124,24 @@
                 <h:outputText value="#{ride.nPlaces}" />
             </p:column>
         </p:dataTable>
-			
+
+        <p:dataTable id="results2" value="#{queryRidesBean.ridesUser}" var="ride" rendered="#{not empty queryRidesBean.ridesUser}" class="results-table">
+            <p:column headerText="From">
+                <h:outputText value="#{ride.from}" />
+            </p:column>
+            <p:column headerText="To">
+                <h:outputText value="#{ride.to}" />
+            </p:column>
+            <p:column headerText="Date">
+                <h:outputText value="#{ride.date}" />
+            </p:column>
+            <p:column headerText="Price">
+                <h:outputText value="#{ride.price}" />
+            </p:column>
+            <p:column headerText="Available Places">
+                <h:outputText value="#{ride.nPlaces}" />
+            </p:column>
+        </p:dataTable>
     </h:form>
 </h:body>
 </html>

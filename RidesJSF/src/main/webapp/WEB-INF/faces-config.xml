@@ -55,7 +55,26 @@
 		</navigation-case>
 	</navigation-rule>
 
+<!--navegacion de QueryRides  -->
 
+<navigation-rule>
+		<from-view-id>/QueryRides.xhtml</from-view-id>
+		<navigation-case>
+			<from-outcome>Login</from-outcome>
+			<to-view-id>/Login.xhtml</to-view-id>
+			<redirect />
+		</navigation-case>
+	</navigation-rule>
+
+<!--navegacion de Register  -->
+<navigation-rule>
+		<from-view-id>/register.xhtml</from-view-id>
+		<navigation-case>
+			<from-outcome>Login</from-outcome>
+			<to-view-id>/Login.xhtml</to-view-id>
+			<redirect />
+		</navigation-case>
+	</navigation-rule>
 
 
 </faces-config>

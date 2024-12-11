@@ -194,54 +194,12 @@ public class HibernateDataAccess {
 		}
 		return res;
 	}
-//	public List<Ride> getRides(String from, String to, Date date) {
-//	    List<Ride> res = new ArrayList<>();
-//	    EntityManager em = null;
-//
-//	    try {
-//	        // Verificación de valores nulos o vacíos
-//	        if (from == null || from.trim().isEmpty() || to == null || to.trim().isEmpty() || date == null) {
-//	            throw new IllegalArgumentException("Los parámetros 'from', 'to' y 'date' no pueden ser nulos o vacíos.");
-//	        }
-//
-//	        em = JPAUtil.getEntityManager();
-//	        System.out.println(">> DataAccess: getRides=> from= " + from + " to= " + to + " date " + date);
-//
-//	        TypedQuery<Ride> query = em.createQuery(
-//	            "SELECT r FROM Ride r WHERE r.from=?1 AND r.to=?2 AND DATE(r.date) = ?3", Ride.class
-//	        );
-//	        query.setParameter(1, from);
-//	        query.setParameter(2, to);
-//	        query.setParameter(3, new java.sql.Date(date.getTime()));
-//
-//	        List<Ride> rides = query.getResultList();
-//	        for (Ride ride : rides) {
-//	            res.add(ride);
-//	            System.out.println("Ride encontrado: " + ride);
-//	        }
-//	    } catch (IllegalArgumentException e) {
-//	    	if (em.getTransaction().isActive())
-//				em.getTransaction().rollback();
-//	    	System.err.println("Error: " + e.getMessage());
-//			throw e;
-//	        
-//	    } catch (Exception e) {
-//	        System.err.println("Ocurrió un error inesperado: " + e.getMessage());
-//	    } finally {
-//	        if (em != null && em.isOpen()) {
-//	            em.close();
-//	        }
-//	    }
-//	    return res;
-//	}
-
-	
 
 	public List<Ride> getRidesByDriver(String username) {
 		EntityManager em = JPAUtil.getEntityManager();
 		try {
 			em.getTransaction().begin();
-			TypedQuery<Driver> query = em.createQuery("SELECT d FROM Driver d WHERE d.username = :username",
+			TypedQuery<Driver> query = em.createQuery("SELECT d FROM Driver d WHERE d.name = :username",
 					Driver.class);
 			query.setParameter("username", username);
 			Driver driver = query.getSingleResult();

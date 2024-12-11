@@ -32,7 +32,6 @@ public class CrearRideBean implements Serializable {
 	private HibernateDataAccess dataAccess;
 
 	public CrearRideBean() {
-		// Inicialización del objeto DAO (HibernateDataAccess)
 		LoginBean loggedUser = (LoginBean) FacesContext.getCurrentInstance().getExternalContext().getSessionMap()
 				.get("loggedUser");
 		if (loggedUser != null) {
@@ -40,6 +39,58 @@ public class CrearRideBean implements Serializable {
 			this.driverEmail = loggedUser.getEmail();
 		}
 
+	}
+
+	public void createRide() {
+		try {
+			if (from == null || from.isEmpty() || to == null || to.isEmpty()) {
+				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
+						"Los campos 'Desde' y 'Hasta' son obligatorios.", null));
+				return;
+			}
+
+			if (!isValidText(from) || !isValidText(to)) {
+				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
+						"Los campos 'Desde' y 'Hasta' deben contener solo letras.", null));
+				return;
+			}
+
+			if (fecha == null) {
+				FacesContext.getCurrentInstance().addMessage(null,
+						new FacesMessage(FacesMessage.SEVERITY_ERROR, "La fecha es obligatoria.", null));
+				return;
+			}
+
+			if (nPlaces <= 0 || nPlaces > 53) {
+				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
+						"El número de plazas debe ser mayor que 0 y capacidad maxima de 53.", null));
+				return;
+			}
+
+			if (price <= 0 || price > 50) {
+				FacesContext.getCurrentInstance().addMessage(null,
+						new FacesMessage(FacesMessage.SEVERITY_ERROR, "El precio debe ser mayor que 0 y menor a 50 euros.", null));
+				return;
+			}
+
+			Ride ride = dataAccess.createRide(from, to, fecha, nPlaces, price, driverEmail);
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,
+					"Viaje creado con éxito, número de viaje: " + ride.getRideNumber(), null));
+		} catch (RideAlreadyExistException e) {
+			FacesContext.getCurrentInstance().addMessage(null,
+					new FacesMessage(FacesMessage.SEVERITY_ERROR, e.getMessage(), null));
+		} catch (RideMustBeLaterThanTodayException e) {
+			FacesContext.getCurrentInstance().addMessage(null,
+					new FacesMessage(FacesMessage.SEVERITY_ERROR, e.getMessage(), null));
+		} catch (Exception e) {
+			FacesContext.getCurrentInstance().addMessage(null,
+					new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error inesperado: " + e.getMessage(), null));
+		}
+	}
+
+	private boolean isValidText(String text) {
+		String regex = "^[a-zA-ZáéíóúÁÉÍÓÚñÑ\\s]+$"; // Permite letras, acentos, ñ y espacios
+		return text != null && text.matches(regex);
 	}
 
 	public String getDriverEmail() {
@@ -99,46 +150,4 @@ public class CrearRideBean implements Serializable {
 		this.driverName = driverName;
 	}
 
-	public void createRide() {
-        try {
-            if (from == null || from.isEmpty() || to == null || to.isEmpty()) {
-                FacesContext.getCurrentInstance().addMessage(null, 
-                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Los campos 'Desde' y 'Hasta' son obligatorios.", null));
-                return;
-            }
-
-            if (fecha == null) {
-                FacesContext.getCurrentInstance().addMessage(null, 
-                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "La fecha es obligatoria.", null));
-                return;
-            }
-
-            if (nPlaces <= 0) {
-                FacesContext.getCurrentInstance().addMessage(null, 
-                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "El número de plazas debe ser mayor que 0.", null));
-                return;
-            }
-
-            if (price <= 0) {
-                FacesContext.getCurrentInstance().addMessage(null, 
-                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "El precio debe ser mayor que 0.", null));
-                return;
-            }
-
-            Ride ride = dataAccess.createRide(from, to, fecha, nPlaces, price, driverEmail);
-            FacesContext.getCurrentInstance().addMessage(null, 
-                new FacesMessage(FacesMessage.SEVERITY_INFO, "Viaje creado con éxito, número de viaje: " + ride.getRideNumber(), null));
-        } catch (RideAlreadyExistException e) {
-            FacesContext.getCurrentInstance().addMessage(null, 
-                new FacesMessage(FacesMessage.SEVERITY_ERROR, e.getMessage(), null));
-        } catch (RideMustBeLaterThanTodayException e) {
-            FacesContext.getCurrentInstance().addMessage(null, 
-                new FacesMessage(FacesMessage.SEVERITY_ERROR, e.getMessage(), null));
-        } catch (Exception e) {
-            FacesContext.getCurrentInstance().addMessage(null, 
-                new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error inesperado: " + e.getMessage(), null));
-        }
-    }
 }
-
-

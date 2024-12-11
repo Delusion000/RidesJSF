@@ -1,106 +1,109 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:h="http://xmlns.jcp.org/jsf/html"
-      xmlns:p="http://primefaces.org/ui">
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
 
-    <h:head>
-        <title>Crear Ride</title>
-        
-        <style>
-            body {
-                font-family: Arial, sans-serif;
-                background-color: #f4f4f4;
-                margin: 0;
-                padding: 0;
-            }
+<h:head>
+	<title>Crear Ride</title>
 
-            h1 {
-                text-align: center;
-                color: #333;
-            }
+	<style>
+body {
+	font-family: Arial, sans-serif;
+	background-color: #f4f4f4;
+	margin: 0;
+	padding: 0;
+}
 
-            .container {
-                display: flex;
-                justify-content: space-between;
-                margin: 20px;
-            }
+h1 {
+	text-align: center;
+	color: #333;
+}
 
-            .form-group {
-                margin: 10px;
-                padding: 10px;
-                flex: 1;
-            }
+.container {
+	display: flex;
+	justify-content: space-between;
+	margin: 20px;
+}
 
-            .calendar-group {
-                margin: 10px;
-                padding: 10px;
-                flex: 0.8;
-            }
+.form-group {
+	margin: 10px;
+	padding: 10px;
+	flex: 1;
+}
 
-            label {
-                display: block;
-                margin-bottom: 5px;
-                color: #555;
-            }
+.calendar-group {
+	margin: 10px;
+	padding: 10px;
+	flex: 0.8;
+}
 
-            input, .ui-calendar {
-                width: 80%;
-                padding: 8px;
-                margin-bottom: 10px;
-                border: 1px solid #ccc;
-                border-radius: 4px;
-            }
+label {
+	display: block;
+	margin-bottom: 5px;
+	color: #555;
+}
 
-            .button-group {
-                display: flex;
-                justify-content: center;
-                margin: 20px;
-            }
+input, .ui-calendar {
+	width: 80%;
+	padding: 8px;
+	margin-bottom: 10px;
+	border: 1px solid #ccc;
+	border-radius: 4px;
+}
 
-            .ui-button {
-                width: 150px;
-                padding: 10px;
-                background-color: #007bff;
-                color: white;
-                border: none;
-                border-radius: 4px;
-                cursor: pointer;
-                margin: 0 10px;
-            }
+.button-group {
+	display: flex;
+	justify-content: center;
+	gap: 10px; /* Espacio horizontal entre botones */
+	margin: 40px;
+}
 
-            .ui-button:hover {
-                background-color: #0056b3;
-            }
-        </style>
-    </h:head>
+.ui-button {
+	width: 200px;
+	padding: 10px;
+	background-color: #008bff;
+	color: white;
+	text-align: center; /* Asegura que el texto esté centrado */
+	border: none; /* Remueve bordes predeterminados */
+	border-radius: 5px; /* Opcional: redondea los bordes */
+	cursor: pointer;
+}
+
+.ui-button:hover {
+	background-color: #0056b3;
+}
+</style>
+</h:head>
 
 <body>
-    <h:form>
-        <h1>Crear viajes para: #{CrearRideBean.driverName}</h1>
-        
-        <div class="container">
-            <div class="form-group">
-                <label for="from">Desde:</label>
-                <p:inputText id="from" value="#{CrearRideBean.from}" />
-                <label for="to">Hasta:</label>
-                <p:inputText id="to" value="#{CrearRideBean.to}" />
-                <label for="nPlaces">Número de Plazas:</label>
-                <p:inputText id="nPlaces" value="#{CrearRideBean.nPlaces}" />
-                <label for="price">Precio:</label>
-                <p:inputText id="price" value="#{CrearRideBean.price}" />
-                <p:messages id="messages" globalOnly="true" />
-                 <div class="button-group">
-            <p:commandButton value="Crear Ride" action="#{CrearRideBean.createRide}" update="messages" />
-            <p:commandButton value="Volver a Login" action="#{LoginBean.logout}" />
-            <p:commandButton value="Menú" action="home.xhtml" />
-        </div>
-            </div>
-            <div class="calendar-group">
-                <label for="fecha">Fecha:</label>
-                <p:calendar id="fecha" value="#{CrearRideBean.fecha}" navigator="false" pattern="dd/MM/yyyy" mode="inline" />
-            </div>
-        </div>
-       
-    </h:form>
+	<h:form>
+		<h1>Crear viajes para: #{CrearRideBean.driverName}</h1>
+
+		<div class="container">
+			<div class="form-group">
+				<label for="from">Desde:</label>
+				<p:inputText id="from" value="#{CrearRideBean.from}" />
+				<label for="to">Hasta:</label>
+				<p:inputText id="to" value="#{CrearRideBean.to}" />
+				<label for="nPlaces">Número de Plazas:</label>
+				<p:inputText id="nPlaces" value="#{CrearRideBean.nPlaces}" />
+				<label for="price">Precio:</label>
+				<p:inputText id="price" value="#{CrearRideBean.price}" />
+				<p:messages id="messages" globalOnly="true" />
+				<div class="button-group">
+					<p:commandButton value="Crear Ride"
+						action="#{CrearRideBean.createRide}" update="messages" />
+					<p:commandButton value="Menú" action="home.xhtml" />
+					<p:commandButton value="Cerrar sesión" action="#{LoginBean.logout}" />
+				</div>
+			</div>
+			<div class="calendar-group">
+				<label for="fecha">Fecha:</label>
+				<p:calendar id="fecha" value="#{CrearRideBean.fecha}"
+					navigator="false" pattern="dd/MM/yyyy" mode="inline" />
+			</div>
+		</div>
+
+	</h:form>
 </body>
 </html>

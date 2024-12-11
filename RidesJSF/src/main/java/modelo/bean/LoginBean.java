@@ -28,7 +28,7 @@ public class LoginBean implements Serializable {
 			if (email == null || email.trim().isEmpty() || password == null || password.trim().isEmpty()) {
 	            FacesContext.getCurrentInstance().addMessage(null, 
 	                new FacesMessage(FacesMessage.SEVERITY_ERROR,
-	                "Los campos 'Email' y 'Contraseña' son obligatorios.", null));
+	                "Los campos 'Email'  'Contraseña' 'Nombre' son obligatorios.", null));
 	            return null; // Mantente en la página de inicio de sesión
 	        }
 			if (dataAccess.validateDriver(email, password)) {
@@ -51,17 +51,30 @@ public class LoginBean implements Serializable {
 
 	public String register() {
 		try {
+			if (email == null || email.trim().isEmpty() || password == null || password.trim().isEmpty() || name == null || name.isEmpty()) {
+	            FacesContext.getCurrentInstance().addMessage(null, 
+	                new FacesMessage(FacesMessage.SEVERITY_ERROR,
+	                "Los campos 'Email' y 'Contraseña' son obligatorios.", null));
+	            return null;
+			}
+			
+			 if (!isValidEmail(email)) {
+		            FacesContext.getCurrentInstance().addMessage(null, 
+		                new FacesMessage(FacesMessage.SEVERITY_ERROR, "Formato de correo inválido", null));
+		            return "register"; // Mantente en la página de registro
+		        }
+			 
 			// Validar la contraseña
 			if (!isValidPassword(password)) {
 				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
-						"La contraseña debe tener al menos 8 caracteres y un número", null));
+						"La contraseña debe tener al menos 8 caracteres, un número Y una letra", null));
 				return "register";
 			}
 
 			// Intentar registrar al usuario
 			if (dataAccess.addNewDriver(email, name, password)) {
 				System.out.println("Registro exitoso");
-				return "Login.xhtml"; // Redirige a la página de inicio de sesión
+				return "Login"; // Redirige a la página de inicio de sesión
 			} else {
 				FacesContext.getCurrentInstance().addMessage(null,
 						new FacesMessage(FacesMessage.SEVERITY_ERROR, "El correo ya está en uso", null));
@@ -83,8 +96,13 @@ public class LoginBean implements Serializable {
 
 	// Validador de contraseña
 	private boolean isValidPassword(String password) {
-		String regex = "^(?=.*\\d).{8,}$"; // Al menos un número y 8 caracteres
+		String regex = "^(?=.*\\d)(?=.*[a-zA-Z]).{8,}$"; // Al menos un número y 8 caracteres
 		return Pattern.matches(regex, password);
+	}
+	
+	private boolean isValidEmail(String email) {
+	    String emailRegex = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$"; // Regex para formato de correo
+	    return email != null && Pattern.matches(emailRegex, email);
 	}
 
 	// Getters y setters para propiedades de vista
