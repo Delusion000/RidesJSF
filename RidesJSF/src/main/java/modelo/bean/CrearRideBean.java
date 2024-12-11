@@ -60,6 +60,17 @@ public class CrearRideBean implements Serializable {
 						new FacesMessage(FacesMessage.SEVERITY_ERROR, "La fecha es obligatoria.", null));
 				return;
 			}
+			if (!isValidNumber(String.valueOf(nPlaces), false)) {
+				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
+						"El número de plazas debe ser un valor numérico entero.", null));
+				return;
+			}
+
+			if (!isValidNumber(String.valueOf(price), true)) {
+				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
+						"El precio debe ser un valor numérico válido (puede incluir decimales).", null));
+				return;
+			}
 
 			if (nPlaces <= 0 || nPlaces > 53) {
 				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
@@ -68,8 +79,8 @@ public class CrearRideBean implements Serializable {
 			}
 
 			if (price <= 0 || price > 50) {
-				FacesContext.getCurrentInstance().addMessage(null,
-						new FacesMessage(FacesMessage.SEVERITY_ERROR, "El precio debe ser mayor que 0 y menor a 50 euros.", null));
+				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
+						"El precio debe ser mayor que 0 y menor a 50 euros.", null));
 				return;
 			}
 
@@ -86,6 +97,14 @@ public class CrearRideBean implements Serializable {
 			FacesContext.getCurrentInstance().addMessage(null,
 					new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error inesperado: " + e.getMessage(), null));
 		}
+	}
+
+	private boolean isValidNumber(String str, boolean allowDecimal) {
+		if (str == null || str.isEmpty()) {
+			return false;
+		}
+		String regex = allowDecimal ? "\\d+(\\.\\d+)?" : "\\d+";
+		return str.matches(regex);
 	}
 
 	private boolean isValidText(String text) {

@@ -29,11 +29,16 @@ public class HibernateDataAccess {
 
 			// Ejemplo de creación de datos iniciales
 			Driver driver1 = new Driver("admin@example.com", "admin", "admin1");
-			Ride ride1 = driver1.addRide("CityA", "CityB", new Date(), 3, 15.0f);
-			Ride ride2 = driver1.addRide("CityC", "CityD", new Date(), 5, 11.0f);
+			Ride ride1 = driver1.addRide("Madrid", "Barcelona", new Date(), 4, 20.0f);
+			Ride ride2 = driver1.addRide("Madrid", "Granada", new Date(), 2, 10.0f);
+			Ride ride3 = driver1.addRide("Valencia", "Alicante", new Date(), 3, 12.5f);
+			Ride ride4 = driver1.addRide("Bilbao", "San Sebastián", new Date(), 5, 18.0f);
+
 
 			Driver driver2 = new Driver("Test2@example.com", "example", "example1");
-			Ride ride3 = driver2.addRide("CityE", "CityF", new Date(), 2, 12.0f);
+			Ride ride5 = driver2.addRide("Madrid", "Pamplona", new Date(), 4, 16.0f);
+			Ride ride6 = driver2.addRide("Málaga", "Córdoba", new Date(), 3, 14.5f);
+			Ride ride7 = driver2.addRide("Salamanca", "Valladolid", new Date(), 2, 9.0f);
 
 			// Persistir datos
 			em.persist(driver1);
@@ -41,7 +46,11 @@ public class HibernateDataAccess {
 			em.persist(ride1);
 			em.persist(ride2);
 			em.persist(ride3);
-
+			em.persist(ride4);
+			em.persist(ride5);
+			em.persist(ride6);
+			em.persist(ride7);
+			
 			em.getTransaction().commit();
 			System.out.println("Datos iniciales precargados en la base de datos.");
 		} catch (Exception e) {

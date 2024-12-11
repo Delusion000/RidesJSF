@@ -93,18 +93,28 @@ public class QueryRidesBean implements Serializable {
 		}
 
 		ridesUser = dataAccess.getRidesByDriver(username);
+		if (!isValidText(username)) {
+			FacesContext.getCurrentInstance().addMessage(null,
+					new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ingresa solo caracteres", null));
+			System.out.print("Problema encontrado en search");
+			return;
+		}
 		if (ridesUser == null || ridesUser.isEmpty()) {
 			FacesContext.getCurrentInstance().addMessage(null,
 					new FacesMessage(FacesMessage.SEVERITY_ERROR, "Usuario no encontrado", null));
 			System.out.print("Problema encontrado en search");
 			return;
 		}
+		
 		FacesContext.getCurrentInstance().addMessage(null,
 				new FacesMessage(FacesMessage.SEVERITY_INFO, "Viajes encontrados Driver", null));
 		System.out.print("rearch ridess" + matchingRides);
 
 	}
-
+	private boolean isValidText(String text) {
+		String regex = "^[a-zA-ZáéíóúÁÉÍÓÚñÑ\\s]+$"; // Permite letras, acentos, ñ y espacios
+		return text != null && text.matches(regex);
+	}
 	// Getters and Setters
 	public String getSelectedDepartCity() {
 		return selectedDepartCity;
