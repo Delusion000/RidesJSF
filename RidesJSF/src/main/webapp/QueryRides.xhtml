@@ -18,7 +18,7 @@
             color: #333;
         }
         .form-container {
-            max-width: 600px;
+            max-width: 800px;
             margin: 20px auto;
             padding: 20px;
             background-color: #fff;
@@ -26,7 +26,7 @@
         }
         .panel-header {
             font-size: 1.2em;
-            margin-bottom: 10px;
+            margin-bottom: 0.5px;
             color: #555;
         }
         .search-label {
@@ -41,6 +41,7 @@
             background-color: #007bff;
             color: #fff;
             border: none;
+             border-radius: 5px;
             cursor: pointer;
             margin-top: 10px;
         }
@@ -64,6 +65,8 @@
             position: absolute;
             top: 10px;
             right: 10px;
+            display: flex; /* Convierte el contenedor en flexbox */
+        	gap: 10px;
         }
         .top-right-links a {
             margin-left: 10px;
@@ -86,7 +89,7 @@
         <!-- Dropdown for Departure Cities -->
         <div class="panel-header">Selecciona ciudad de salida</div>
         <p:selectOneMenu value="#{queryRidesBean.selectedDepartCity}" style="width: 100%;">
-            <f:selectItem itemLabel="Selecciona una ciudad" itemValue="" />
+            <f:selectItem itemLabel="--Ciudades--" itemValue="" />
             <f:selectItems value="#{queryRidesBean.getDepartCities()}" />
             <p:ajax event="change" listener="#{queryRidesBean.loadArrivalCities()}" update="arrivalCity" />
         </p:selectOneMenu>
@@ -94,7 +97,7 @@
         <!-- Dropdown for Arrival Cities -->
         <div class="panel-header">Selecciona ciudad de llegada</div>
         <p:selectOneMenu id="arrivalCity" value="#{queryRidesBean.selectedArrivalCity}" style="width: 100%;">
-            <f:selectItem itemLabel="Selecciona una ciudad" itemValue="" />
+            <f:selectItem itemLabel="--Ciudades--"  itemValue=""  />
             <f:selectItems value="#{queryRidesBean.arrivalCities}" />
         </p:selectOneMenu>
 
@@ -103,15 +106,17 @@
         <p:calendar value="#{queryRidesBean.selectedDate}" pattern="dd/MM/yyyy" style="width: 100%;" />
 
         <!-- Search Button -->
-        <h:commandButton value="Search" action="#{queryRidesBean.searchRides}" update="results" class="search-button" />
-        <p:messages globalOnly="true" style="color: red;" />
+        <h:commandButton value="Buscar" action="#{queryRidesBean.searchRides}" update="results" class="search-button" />
+        
 
         <!-- Search by Username -->
         <div class="panel-header">Viajes por Conductor</div>
         <label for="username" class="search-label">Nombre de conductor</label>
         <p:inputText id="username" value="#{queryRidesBean.username}" style="width: 100%;" />
-        <h:commandButton value="Search by Username" action="#{queryRidesBean.searchRidesWithUser}" update="results2" class="search-button" />
-
+        <h:commandButton value="Buscar por nombre de usuario" action="#{queryRidesBean.searchRidesWithUser}" update="results2" class="search-button" />
+		
+		<p:messages globalOnly="true" style="color: red;" />
+        
         <!-- Results Table -->
         <p:dataTable id="results" value="#{queryRidesBean.matchingRides}" var="ride" rendered="#{not empty queryRidesBean.matchingRides}" class="results-table">
             <p:column headerText="Driver">

@@ -73,6 +73,11 @@ public class QueryRidesBean implements Serializable {
 		}
 
 		matchingRides = dataAccess.getRides(selectedDepartCity, selectedArrivalCity, selectedDate);
+		if (matchingRides == null || matchingRides.isEmpty()) {
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"viaje no encontrado, verifique la fecha", null));
+			return;
+			}
 		FacesContext.getCurrentInstance().addMessage(null,
 				new FacesMessage(FacesMessage.SEVERITY_INFO, "Viajes encontrados", null));
 		System.out.print("rearch ridess" + matchingRides);
@@ -88,6 +93,12 @@ public class QueryRidesBean implements Serializable {
 		}
 
 		ridesUser = dataAccess.getRidesByDriver(username);
+		if (ridesUser == null || ridesUser.isEmpty()) {
+			FacesContext.getCurrentInstance().addMessage(null,
+					new FacesMessage(FacesMessage.SEVERITY_ERROR, "Usuario no encontrado", null));
+			System.out.print("Problema encontrado en search");
+			return;
+		}
 		FacesContext.getCurrentInstance().addMessage(null,
 				new FacesMessage(FacesMessage.SEVERITY_INFO, "Viajes encontrados Driver", null));
 		System.out.print("rearch ridess" + matchingRides);
